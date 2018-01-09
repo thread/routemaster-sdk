@@ -13,6 +13,7 @@ jobs:
 
     environment:
         TOXENV: py35,mypy,lint
+        COVERALLS: true
     docker:
       - image: circleci/python:3.5
 
@@ -58,8 +59,9 @@ jobs:
           path: build/artifacts/coverage
           destination: coverage
       - run:
-          name: Report coverage
+          name: Report coverage (if enabled for this job)
           command: |
+            if [ "$COVERALLS" != "true" ]; then exit 0; fi
             . venv/bin/activate
             coveralls
 
@@ -67,5 +69,6 @@ jobs:
     <<: *build-template
     environment:
         TOXENV: py36
+        COVERALLS: false
     docker:
       - image: circleci/python:3.6
