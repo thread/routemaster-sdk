@@ -142,6 +142,94 @@ def test_get_labels_error_response(routemaster_api: RoutemasterAPI):
 
 
 @httpretty.activate
+def test_get_label(routemaster_api: RoutemasterAPI):
+    expected_returned = {'foo': 'returned'}
+
+    httpretty.register_uri(
+        httpretty.GET,
+        'http://localhost:2017/state-machines/testing-machine/labels/demo-label',
+        body=json.dumps({
+            'metadata': expected_returned,
+            'state': 'first-state',
+        }),
+        content_type='application/json',
+    )
+
+    label_ref = LabelRef(
+        LabelName('demo-label'),
+        StateMachine('testing-machine'),
+    )
+
+    returned_label = routemaster_api.get_label(label_ref)
+
+    assert returned_label == Label(
+        label_ref,
+        expected_returned,
+        State('first-state'),
+    )
+
+
+@httpretty.activate
+def test_get_label_error_response(routemaster_api: RoutemasterAPI):
+    httpretty.register_uri(
+        httpretty.GET,
+        'http://localhost:2017/state-machines/testing-machine/labels/demo-label',
+        content_type='application/json',
+        status=502,
+    )
+
+    label_ref = LabelRef(
+        LabelName('demo-label'),
+        StateMachine('testing-machine'),
+    )
+
+    with pytest.raises(requests.HTTPError):
+        routemaster_api.get_label(label_ref)
+
+
+@httpretty.activate
+def test_get_label_unknown_label(routemaster_api: RoutemasterAPI):
+    # Note: the update API doesn't differentiate between an unknown label and an
+    # unknown state machine.
+    httpretty.register_uri(
+        httpretty.GET,
+        'http://localhost:2017/state-machines/testing-machine/labels/none',
+        content_type='application/json',
+        status=404,
+    )
+
+    label_ref = LabelRef(
+        LabelName('none'),
+        StateMachine('testing-machine'),
+    )
+
+    with pytest.raises(UnknownLabel) as e:
+        routemaster_api.get_label(label_ref)
+
+    assert e.value.label == label_ref
+
+
+@httpretty.activate
+def test_get_label_deleted_label(routemaster_api: RoutemasterAPI):
+    httpretty.register_uri(
+        httpretty.GET,
+        'http://localhost:2017/state-machines/testing-machine/labels/was-deleted',
+        content_type='application/json',
+        status=410,
+    )
+
+    label_ref = LabelRef(
+        LabelName('was-deleted'),
+        StateMachine('testing-machine'),
+    )
+
+    with pytest.raises(DeletedLabel) as e:
+        routemaster_api.get_label(label_ref)
+
+    assert e.value.label == label_ref
+
+
+@httpretty.activate
 def test_create_label(routemaster_api: RoutemasterAPI):
     expected_sent = {'foo': 'sent'}
     expected_returned = {'foo': 'returned'}
