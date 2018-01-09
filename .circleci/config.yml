@@ -8,8 +8,11 @@ workflows:
             - build-36
 
 jobs:
-  build-35:
-    working_directory: ~/routemaster_sdk_35
+  build-35: &build-template
+    working_directory: ~/routemaster_sdk
+
+    environment:
+        TOXENV: py35,mypy,lint
     docker:
       - image: circleci/python:3.5
 
@@ -19,7 +22,7 @@ jobs:
         # Set up a cached virtualenv in which to install tox
       - restore_cache:
           name: Restore build dependency cache
-          key: deps-venv-{{ .Branch }}-3.5-2.9.1-1.2.0
+          key: deps-venv-{{ .Branch }}-{{ .Environment.CIRCLE_STAGE }}-2.9.1-1.2.0
       - run:
           name: Install tox
           command: |
@@ -29,14 +32,14 @@ jobs:
             pip install coveralls==1.2.0
       - save_cache:
           name: Save build dependency cache
-          key: deps-venv-{{ .Branch }}-3.5-2.9.1-1.2.0
+          key: deps-venv-{{ .Branch }}-{{ .Environment.CIRCLE_STAGE }}-2.9.1-1.2.0
           paths:
             - "venv"
 
       # Run tox, caching the .tox directory
       - restore_cache:
           name: Restore .tox cache
-          key: deps-tox-{{ .Branch }}-3.5-{{ checksum "scripts/linting/requirements.txt" }}-{{ checksum "scripts/typechecking/requirements.txt" }}-{{ checksum "scripts/testing/requirements.txt" }}-{{ checksum "setup.py" }}
+          key: deps-tox-{{ .Branch }}-{{ .Environment.CIRCLE_STAGE }}-{{ checksum "scripts/linting/requirements.txt" }}-{{ checksum "scripts/typechecking/requirements.txt" }}-{{ checksum "scripts/testing/requirements.txt" }}-{{ checksum "setup.py" }}
       - run:
           name: Test/Lint/Typecheck
           command: |
@@ -44,7 +47,7 @@ jobs:
             tox
       - save_cache:
           name: Save .tox cache
-          key: deps-tox-{{ .Branch }}-3.5-{{ checksum "scripts/linting/requirements.txt" }}-{{ checksum "scripts/typechecking/requirements.txt" }}-{{ checksum "scripts/testing/requirements.txt" }}-{{ checksum "setup.py" }}
+          key: deps-tox-{{ .Branch }}-{{ .Environment.CIRCLE_STAGE }}-{{ checksum "scripts/linting/requirements.txt" }}-{{ checksum "scripts/typechecking/requirements.txt" }}-{{ checksum "scripts/testing/requirements.txt" }}-{{ checksum "setup.py" }}
           paths:
             - ".tox"
 
@@ -61,53 +64,8 @@ jobs:
             coveralls
 
   build-36:
-    working_directory: ~/routemaster_sdk_36
+    <<: *build-template
+    environment:
+        TOXENV: py36
     docker:
       - image: circleci/python:3.6
-
-    steps:
-      - checkout
-
-        # Set up a cached virtualenv in which to install tox
-      - restore_cache:
-          name: Restore build dependency cache
-          key: deps-venv-{{ .Branch }}-3.6-2.9.1-1.2.0
-      - run:
-          name: Install tox
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install tox==2.9.1
-            pip install coveralls==1.2.0
-      - save_cache:
-          name: Save build dependency cache
-          key: deps-venv-{{ .Branch }}-3.6-2.9.1-1.2.0
-          paths:
-            - "venv"
-
-      # Run tox, caching the .tox directory
-      - restore_cache:
-          name: Restore .tox cache
-          key: deps-tox-{{ .Branch }}-3.6-{{ checksum "scripts/linting/requirements.txt" }}-{{ checksum "scripts/typechecking/requirements.txt" }}-{{ checksum "scripts/testing/requirements.txt" }}-{{ checksum "setup.py" }}
-      - run:
-          name: Test/Lint/Typecheck
-          command: |
-            . venv/bin/activate
-            tox
-      - save_cache:
-          name: Save .tox cache
-          key: deps-tox-{{ .Branch }}-3.6-{{ checksum "scripts/linting/requirements.txt" }}-{{ checksum "scripts/typechecking/requirements.txt" }}-{{ checksum "scripts/testing/requirements.txt" }}-{{ checksum "setup.py" }}
-          paths:
-            - ".tox"
-
-      # Testing done, store results
-      - store_test_results:
-          path: build/results
-      - store_artifacts:
-          path: build/artifacts/coverage
-          destination: coverage
-      - run:
-          name: Report coverage
-          command: |
-            . venv/bin/activate
-            coveralls
