@@ -138,7 +138,7 @@ class RoutemasterAPI:
 
         return Label(
             ref=label,
-            metadata=Metadata(data['metadata']),
+            metadata=data['metadata'],
             state=State(data['state']),
         )
 
@@ -170,7 +170,7 @@ class RoutemasterAPI:
 
         return Label(
             ref=label,
-            metadata=Metadata(data['metadata']),
+            metadata=data['metadata'],
             state=State(data['state']),
         )
 
@@ -199,6 +199,6 @@ class RoutemasterAPI:
 
         return Label(
             ref=label,
-            metadata=Metadata(data['metadata']),
+            metadata=data['metadata'],
             state=State(data['state']),
         )
