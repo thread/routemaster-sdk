@@ -104,3 +104,9 @@ jobs:
           command: |
             . venv/bin/activate
             coveralls
+
+workflows:
+    version: 2
+    build_and_test:
+        - build-35
+        - build-36
