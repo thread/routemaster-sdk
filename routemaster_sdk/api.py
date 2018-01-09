@@ -110,7 +110,7 @@ class RoutemasterAPI:
         return Label(
             ref=label,
             metadata=data['metadata'],
-            state=data['state'],
+            state=State(data['state']),
         )
 
     def create_label(self, label: LabelRef, metadata: Metadata) -> Label:
