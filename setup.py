@@ -6,7 +6,7 @@ with open('README.rst', 'r', encoding='utf-8') as f:
 
 setup(
     name='routemaster-sdk',
-    version='0.0.1',
+    version='0.0.2',
     url='https://github.com/thread/routemaster-sdk',
     description="SDK for Routemaster (state machines as a service).",
     long_description=long_description,
