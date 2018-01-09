@@ -1,11 +1,13 @@
 """Well known exceptions."""
 
+from routemaster_sdk.types import LabelRef, StateMachine
+
 
 class UnknownLabel(ValueError):
     """Represents a label unknown in the given state machine."""
     deleted = False
 
-    def __init__(self, label):
+    def __init__(self, label: LabelRef) -> None:
         self.label = label
 
     def __str__(self):
@@ -20,7 +22,7 @@ class DeletedLabel(UnknownLabel):
 class UnknownStateMachine(ValueError):
     """Represents a state machine not in the system."""
 
-    def __init__(self, state_machine):
+    def __init__(self, state_machine: StateMachine) -> None:
         self.state_machine = state_machine
 
     def __str__(self):
@@ -30,7 +32,7 @@ class UnknownStateMachine(ValueError):
 class LabelAlreadyExists(ValueError):
     """Thrown when a label already exists in the state machine."""
 
-    def __init__(self, label):
+    def __init__(self, label: LabelRef) -> None:
         self.label = label
 
     def __str__(self):
