@@ -142,7 +142,7 @@ class RoutemasterAPI:
             state=State(data['state']),
         )
 
-    def update_label(self, label: LabelRef, metadata: Metadata):
+    def update_label(self, label: LabelRef, metadata: Metadata) -> Label:
         """
         Update a label in a state machine.
 
