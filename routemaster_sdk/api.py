@@ -174,7 +174,7 @@ class RoutemasterAPI:
             state=State(data['state']),
         )
 
-    def delete_label(self, label: LabelRef, metadata: Metadata):
+    def delete_label(self, label: LabelRef) -> None:
         """
         Delete a label in a state machine.
 
@@ -185,20 +185,9 @@ class RoutemasterAPI:
         - ``UnknownStateMachine`` if the state machine is not known (HTTP 404).
         - ``requests.HTTPError`` for other HTTP errors.
         """
-        response = self.delete(
-            self.build_label_url(label),
-            json={'metadata': metadata},
-        )
+        response = self.delete(self.build_label_url(label))
 
         if response.status_code == 404:
             raise UnknownStateMachine(label.state_machine)
 
         response.raise_for_status()
-
-        data = response.json()
-
-        return Label(
-            ref=label,
-            metadata=data['metadata'],
-            state=State(data['state']),
-        )
