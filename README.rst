@@ -5,6 +5,8 @@ Routemaster SDK
 
 Python SDK for interacting with `Routemaster`_'s API.
 
+Install with ``pip install routemaster-sdk``.
+
 .. |CircleCI-Badge| image:: https://circleci.com/gh/thread/routemaster-sdk.svg?style=shield
     :target: https://circleci.com/gh/thread/routemaster-sdk
 
