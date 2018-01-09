@@ -4,11 +4,9 @@ import pytest
 import httpretty
 
 from routemaster_sdk import (
-    Json,
     Label,
     State,
     LabelRef,
-    Metadata,
     LabelName,
     DeletedLabel,
     StateMachine,
