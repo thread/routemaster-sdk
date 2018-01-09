@@ -154,7 +154,7 @@ class RoutemasterAPI:
         - ``DeletedLabel`` if the label has been deleted (HTTP 410).
         - ``requests.HTTPError`` for other HTTP errors.
         """
-        response = self.post(
+        response = self.patch(
             self.build_label_url(label),
             json={'metadata': metadata},
         )
@@ -185,7 +185,7 @@ class RoutemasterAPI:
         - ``UnknownStateMachine`` if the state machine is not known (HTTP 404).
         - ``requests.HTTPError`` for other HTTP errors.
         """
-        response = self.post(
+        response = self.delete(
             self.build_label_url(label),
             json={'metadata': metadata},
         )
