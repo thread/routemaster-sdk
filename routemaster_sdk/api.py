@@ -42,7 +42,7 @@ class RoutemasterAPI:
 
     def build_label_url(self, label: LabelRef) -> str:
         """Build the url for a label in the wrapped API instance."""
-        return self.build_url('state-machines/{0}/label/{1}'.format(
+        return self.build_url('state-machines/{0}/labels/{1}'.format(
             label.state_machine,
             label.name,
         ))
