@@ -1,5 +1,12 @@
 version: 2
 
+workflows:
+    version: 2
+    build_and_test:
+        jobs:
+            - build-35
+            - build-36
+
 jobs:
   build-35:
     working_directory: ~/routemaster_sdk_35
@@ -104,10 +111,3 @@ jobs:
           command: |
             . venv/bin/activate
             coveralls
-
-workflows:
-    version: 2
-    build_and_test:
-        jobs:
-            - build-35
-            - build-36
