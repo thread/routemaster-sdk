@@ -58,7 +58,7 @@ jobs:
       - store_test_results:
           path: build/results
       - store_artifacts:
-          path: build/artifacts/coverage
+          path: build/artifacts
           destination: coverage
       - run:
           name: Report coverage (if enabled for this job)
