@@ -6,6 +6,8 @@ workflows:
         jobs:
             - build-35
             - build-36
+            - build-37
+            - build-38
 
 jobs:
   build-35: &build-template
@@ -72,3 +74,19 @@ jobs:
         COVERALLS: false
     docker:
       - image: circleci/python:3.6
+
+  build-37:
+    <<: *build-template
+    environment:
+        TOXENV: py37
+        COVERALLS: false
+    docker:
+      - image: circleci/python:3.7
+
+  build-38:
+    <<: *build-template
+    environment:
+        TOXENV: py38
+        COVERALLS: false
+    docker:
+      - image: circleci/python:3.8
